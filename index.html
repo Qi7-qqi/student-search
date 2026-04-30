@@ -3,39 +3,109 @@
 <head>
   <meta charset="UTF-8">
   <title>学生信息查询</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f8; margin: 0; padding: 0; }
-    .container { max-width: 480px; margin: 50px auto; background-color: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; }
-    .school-name { font-size: 26px; font-weight: bold; color: #333; margin-bottom: 5px; }
-    .grade { font-size: 18px; color: #555; margin-bottom: 20px; }
-    input { width: 70%; padding: 10px 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; }
-    button { padding: 10px 20px; margin: 10px 0; font-size: 16px; border: none; border-radius: 6px; background-color: #007bff; color: #fff; cursor: pointer; transition: background-color 0.2s; }
-    button:hover { background-color: #0056b3; }
-    #result { margin-top: 20px; font-weight: bold; font-size: 18px; color: #1a73e8; }
-    @media (max-width: 500px) { input { width: 90%; } }
+    /* 页面整体布局 */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f6f8;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 480px;
+      margin: 20px auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    /* 顶部学校信息 */
+    .school-name {
+      font-size: 26px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 5px;
+    }
+    .grade {
+      font-size: 18px;
+      color: #555;
+      margin-bottom: 20px;
+    }
+
+    /* 输入框样式 */
+    input {
+      width: 85%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    /* 按钮样式 */
+    button {
+      width: 90%;
+      padding: 12px;
+      margin: 10px 0;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background-color: #007bff;
+      color: #fff;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    /* 搜索结果 */
+    #result {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 18px;
+      color: #1a73e8;
+    }
+
+    /* 手机适配 */
+    @media (max-width: 500px) {
+      input, button { width: 95%; }
+      .container { margin: 10px; padding: 15px; }
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- 顶部文字显示学校和年级 -->
+    <!-- 顶部文字 -->
     <div class="school-name">重庆市第二十九中学</div>
     <div class="grade">2025级</div>
 
+    <!-- 搜索输入 -->
     <input type="text" id="classInput" placeholder="班级（阿拉伯数字）"><br>
     <input type="text" id="nameInput" placeholder="姓名"><br>
     <button onclick="searchStudent()">搜索</button>
+
+    <!-- 搜索结果显示 -->
     <div id="result"></div>
-    <button onclick="goToApp()">下载天学英语</button>
+
+    <!-- 下载按钮 -->
+    <button onclick="goToApp()">前往下载天学网app</button>
   </div>
 
   <script>
     let students = [];
 
+    // 加载学生数据 JSON
     fetch('students_with_class.json')
       .then(res => res.json())
       .then(data => students = data)
       .catch(err => console.error('加载学生数据失败:', err));
 
+    // 搜索函数
     function searchStudent() {
       const classNum = document.getElementById('classInput').value.trim();
       const name = document.getElementById('nameInput').value.trim();
@@ -59,19 +129,9 @@
       }
     }
 
+    // 下载按钮函数
     function goToApp() {
-      const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-      let url = '';
-
-      if (/android/i.test(userAgent)) {
-        url = 'https://play.google.com/store/search?q=天学英语&c=apps';
-      } else if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
-        url = 'https://apps.apple.com/cn/search?term=天学英语';
-      } else {
-        url = 'https://www.baidu.com/s?wd=天学英语';
-      }
-
-      window.location.href = url;
+      window.location.href = 'http://www.up366.cn/download/student.html';
     }
   </script>
 </body>
