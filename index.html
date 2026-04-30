@@ -4,56 +4,74 @@
   <meta charset="UTF-8">
   <title>学生信息查询</title>
   <style>
-    body { font-family: Arial; padding: 30px; max-width: 500px; margin: auto; }
-    input { padding: 5px; margin: 5px 10px 5px 0; width: 60%; }
-    button { padding: 5px 10px; margin-top: 10px; }
-    #result { margin-top: 20px; font-weight: bold; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f8; margin: 0; padding: 0; }
+    .container { max-width: 480px; margin: 50px auto; background-color: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; }
+    .school-name { font-size: 26px; font-weight: bold; color: #333; margin-bottom: 5px; }
+    .grade { font-size: 18px; color: #555; margin-bottom: 20px; }
+    input { width: 70%; padding: 10px 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; }
+    button { padding: 10px 20px; margin: 10px 0; font-size: 16px; border: none; border-radius: 6px; background-color: #007bff; color: #fff; cursor: pointer; transition: background-color 0.2s; }
+    button:hover { background-color: #0056b3; }
+    #result { margin-top: 20px; font-weight: bold; font-size: 18px; color: #1a73e8; }
+    @media (max-width: 500px) { input { width: 90%; } }
   </style>
 </head>
 <body>
-  <h2>学生信息查询</h2>
-  <label>班级（阿拉伯数字）:</label>
-  <input type="text" id="classInput" placeholder="例如 1">
-  <br>
-  <label>姓名:</label>
-  <input type="text" id="nameInput" placeholder="请输入姓名">
-  <button onclick="searchStudent()">搜索</button>
-  <div id="result"></div>
-  <button onclick="goToUrl()">访问其他网址</button>
+  <div class="container">
+    <!-- 顶部文字显示学校和年级 -->
+    <div class="school-name">重庆市第二十九中学</div>
+    <div class="grade">2025级</div>
+
+    <input type="text" id="classInput" placeholder="班级（阿拉伯数字）"><br>
+    <input type="text" id="nameInput" placeholder="姓名"><br>
+    <button onclick="searchStudent()">搜索</button>
+    <div id="result"></div>
+    <button onclick="goToApp()">下载天学英语</button>
+  </div>
 
   <script>
     let students = [];
 
-    // 加载学生数据 JSON
     fetch('students_with_class.json')
-      .then(response => response.json())
-      .then(data => { students = data; })
+      .then(res => res.json())
+      .then(data => students = data)
       .catch(err => console.error('加载学生数据失败:', err));
 
     function searchStudent() {
       const classNum = document.getElementById('classInput').value.trim();
       const name = document.getElementById('nameInput').value.trim();
+      const resultDiv = document.getElementById('result');
 
       if (!classNum || !name) {
-        document.getElementById('result').textContent = '请同时填写班级和姓名';
+        resultDiv.textContent = '请同时填写班级和姓名';
+        resultDiv.style.color = 'red';
         return;
       }
 
-      // 构造班级字符串，比如 "2025级1班"
       const fullClass = `2025级${classNum}班`;
-
-      // 查找学生
       const student = students.find(s => s.班级 === fullClass && s.学生姓名 === name);
-      const resultDiv = document.getElementById('result');
+
       if (student) {
         resultDiv.textContent = `学号: ${student.学号} / 学生账号: ${student.学生账号}`;
+        resultDiv.style.color = '#1a73e8';
       } else {
         resultDiv.textContent = '未找到该学生';
+        resultDiv.style.color = 'red';
       }
     }
 
-    function goToUrl() {
-      window.location.href = 'https://example.com'; // 替换为你的网址
+    function goToApp() {
+      const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+      let url = '';
+
+      if (/android/i.test(userAgent)) {
+        url = 'https://play.google.com/store/search?q=天学英语&c=apps';
+      } else if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+        url = 'https://apps.apple.com/cn/search?term=天学英语';
+      } else {
+        url = 'https://www.baidu.com/s?wd=天学英语';
+      }
+
+      window.location.href = url;
     }
   </script>
 </body>
