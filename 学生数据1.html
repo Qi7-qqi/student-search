@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>学生信息查询</title>
+  <style>
+    body { font-family: Arial; padding: 30px; max-width: 500px; margin: auto; }
+    input { padding: 5px; margin: 5px 10px 5px 0; width: 60%; }
+    button { padding: 5px 10px; margin-top: 10px; }
+    #result { margin-top: 20px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h2>学生信息查询</h2>
+  <label>班级（阿拉伯数字）:</label>
+  <input type="text" id="classInput" placeholder="例如 1">
+  <br>
+  <label>姓名:</label>
+  <input type="text" id="nameInput" placeholder="请输入姓名">
+  <button onclick="searchStudent()">搜索</button>
+  <div id="result"></div>
+  <button onclick="goToUrl()">访问其他网址</button>
+
+  <script>
+    let students = [];
+
+    // 加载学生数据 JSON
+    fetch('students_with_class.json')
+      .then(response => response.json())
+      .then(data => { students = data; })
+      .catch(err => console.error('加载学生数据失败:', err));
+
+    function searchStudent() {
+      const classNum = document.getElementById('classInput').value.trim();
+      const name = document.getElementById('nameInput').value.trim();
+
+      if (!classNum || !name) {
+        document.getElementById('result').textContent = '请同时填写班级和姓名';
+        return;
+      }
+
+      // 构造班级字符串，比如 "2025级1班"
+      const fullClass = `2025级${classNum}班`;
+
+      // 查找学生
+      const student = students.find(s => s.班级 === fullClass && s.学生姓名 === name);
+      const resultDiv = document.getElementById('result');
+      if (student) {
+        resultDiv.textContent = `学号: ${student.学号} / 学生账号: ${student.学生账号}`;
+      } else {
+        resultDiv.textContent = '未找到该学生';
+      }
+    }
+
+    function goToUrl() {
+      window.location.href = 'https://example.com'; // 替换为你的网址
+    }
+  </script>
+</body>
+</html>
